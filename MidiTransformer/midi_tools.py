@@ -4,6 +4,8 @@ import torch
 SUSTAIN_THRESHOLD = 64
 TIME_SHIFT_INCREMENT_MS = 4
 
+# Encoded as stated in https://arxiv.org/pdf/1808.03715 - 5.0.1
+
 def midi_to_tensor(midi_path, max_length):
     """
     Converts a MIDI file into a tensor of MIDI instruction tokens.
@@ -38,7 +40,7 @@ def midi_to_tensor(midi_path, max_length):
     def pad_or_truncate_tensor(tensor, max_length):
         """Pad the tensor to the maximum length."""
         if len(tensor) < max_length:
-            tensor += [414 for _ in (max_length - len(tensor))]
+            tensor += [414 for _ in range(max_length - len(tensor))]
             return tensor
         elif len(tensor) > max_length:
             return tensor[:max_length]
@@ -132,7 +134,7 @@ def midi_to_tensor(midi_path, max_length):
                 continue
 
     # Pad or truncate the tensor to the maximum length 
-    midi_instructions = pad_or_truncate_tensor(midi_instructions, max_length)
+    # midi_instructions = pad_or_truncate_tensor(midi_instructions, max_length)
 
     return torch.LongTensor(midi_instructions), ppq, tempo
     
